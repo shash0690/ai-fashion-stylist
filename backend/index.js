@@ -49,8 +49,16 @@ app.post('/upload', upload.single('image'), (req, res) => {
     filePath: `https://ai-fashion-stylist.onrender.com/uploads/${req.file.filename}`,
     analysis: { style: 'casual', color: 'blue' },
     outfits: [
-      { name: 'Blue Jeans', image: '', buyLink: '' },
-      { name: 'White Sneakers', image: '', buyLink: '' }
+      {
+        name: 'Blue Jeans',
+        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?fit=crop&w=400&q=80',
+        buyLink: 'https://example.com/blue-jeans'
+      },
+      {
+        name: 'White Sneakers',
+        image: 'https://images.unsplash.com/photo-1513267048330-cb2ee57bfb34?fit=crop&w=400&q=80',
+        buyLink: 'https://example.com/white-sneakers'
+      }
     ]
   });
 });
