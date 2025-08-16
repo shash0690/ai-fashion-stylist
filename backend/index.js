@@ -39,7 +39,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running!' });
 });
 
-// 8. Upload endpoint with multiple unique outfits
+// 8. Upload endpoint with all outfits (collection + individual products)
 app.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
@@ -49,6 +49,29 @@ app.post('/upload', upload.single('image'), (req, res) => {
     filePath: `https://ai-fashion-stylist.onrender.com/uploads/${req.file.filename}`,
     analysis: { style: 'casual', color: 'blue' },
     outfits: [
+      // Amazon T-Shirts Collection
+      {
+        name: "Men's T-Shirts Collection",
+        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?fit=crop&w=400&q=80',
+        buyLink: 'https://www.amazon.in/s?k=mens+tshirt&tag=shash0690-21'
+      },
+      // Individual T-Shirts (examples)
+      {
+        name: 'Cotton T-Shirt',
+        image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?fit=crop&w=400&q=80',
+        buyLink: 'https://www.amazon.in/dp/B07C65XFBB/?tag=shash0690-21'
+      },
+      {
+        name: 'Plain White Tee',
+        image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?fit=crop&w=400&q=80',
+        buyLink: 'https://www.amazon.in/dp/B09V7ZLJ6H/?tag=shash0690-21'
+      },
+      {
+        name: 'Stylish Printed T-Shirt',
+        image: 'https://images.unsplash.com/photo-1513883049090-d0b7439799bf?fit=crop&w=400&q=80',
+        buyLink: 'https://www.amazon.in/dp/B08DD4K76K/?tag=shash0690-21'
+      },
+      // Existing demo products
       {
         name: 'Blue Jeans',
         image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?fit=crop&w=400&q=80',
@@ -78,4 +101,12 @@ app.post('/recommend', express.json(), (req, res) => {
   res.json({
     suggestions: [
       { name: 'Floral Dress', match: 0.94 },
-      { name: 'Denim Jacket
+      { name: 'Denim Jacket', match: 0.87 }
+    ]
+  });
+});
+
+// 10. Start server on dynamic port for Render
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
