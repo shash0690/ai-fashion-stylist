@@ -1,19 +1,14 @@
-import outfits from "../data/outfits.json" assert { type: "json" };
+// JSON file ko require() se import karna
+const outfits = require("../data/outfits.json");
 
-/**
- * Match outfits by colorTone + style. Fallbacks to partial matches.
- */
-export function getRecommendations(analysis) {
-  const tone = (analysis.colorTone || "").toLowerCase();
-  const style = (analysis.detectedStyle || "").toLowerCase();
-
-  const exact = outfits.find(
-    o => o.colorTone.toLowerCase() === tone && o.style.toLowerCase() === style
-  );
-  if (exact) return exact.outfits;
-
-  const toneMatch = outfits.find(o => o.colorTone.toLowerCase() === tone);
-  if (toneMatch) return toneMatch.outfits;
-
-  return outfits.flatMap(o => o.outfits).slice(0, 4);
+// Example function jo user features ke basis par outfit suggestions deta hai
+function getOutfitSuggestions(userFeatures) {
+  // Aapka filter ya logic yahan dalein. Example:
+  return outfits.filter(outfit => {
+    // Sample condition: yeh aap apne hisab se customize kar sakte hain
+    return outfit.category === userFeatures.preferredCategory;
+  });
 }
+
+// Export function taaki aap isko backend me use kar saken
+module.exports = { getOutfitSuggestions };
