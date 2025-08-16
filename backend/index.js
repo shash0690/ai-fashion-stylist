@@ -6,6 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
+
 // Outfit recommendation helper
 const { getOutfitSuggestions } = require("./services/outfitRecommendation.js");
 
@@ -14,15 +15,23 @@ const port = process.env.PORT || 5000;
 const HF_API_KEY = process.env.HF_API_KEY;
 const HF_MODEL_URL = process.env.HF_MODEL_URL;
 
-// NOTE: CommonJS me __dirname directly use karo, NO need to reassign!
-
 app.use(cors({
   origin: "http://localhost:5173",
   methods: ["GET", "POST"],
   credentials: true
 }));
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Basic GET routes for health checks
+app.get('/', (req, res) => {
+  res.send('AI Fashion Stylist backend is live!');
+});
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is running!' });
+});
+
+// Multer setup for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -33,22 +42,21 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Helper: Convert image to base64
+// Helper function to convert image to base64
 function imageToBase64(filePath) {
   const file = fs.readFileSync(filePath);
   return file.toString('base64');
 }
 
+// POST /upload endpoint to upload image and get prediction
 app.post("/upload", upload.single("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
   const filePath = path.join(__dirname, "uploads", req.file.filename);
 
-  // Convert image to base64
   const imageB64 = imageToBase64(filePath);
 
-  // Send to Hugging Face API and handle results
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -63,7 +71,6 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     });
     clearTimeout(timeoutId);
 
-    // Print the raw response (text) from HuggingFace API
     const respText = await response.text();
     console.log('Raw HF API response:', respText);
 
@@ -74,7 +81,6 @@ app.post("/upload", upload.single("image"), async (req, res) => {
       console.error('JSON parse error:', e);
     }
 
-    // Top prediction and friendly label mapping
     const top = Array.isArray(prediction) && prediction.length > 0 ? prediction[0] : {};
     const friendlyNames = {
       "necklace": "Jewelry",
@@ -87,7 +93,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
     res.json({
       message: "File uploaded and analyzed successfully",
-      filePath: `http://localhost:${port}/uploads/${req.file.filename}`,
+      filePath: `https://ai-fashion-stylist.onrender.com/uploads/${req.file.filename}`,
       topPrediction: {
         label: friendlyLabel,
         score: top && top.score ? top.score : 0
@@ -98,13 +104,13 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     console.error('Prediction Error:', err);
     res.status(500).json({
       message: "Upload done but AI prediction failed",
-      filePath: `http://localhost:${port}/uploads/${req.file.filename}`,
+      filePath: `https://ai-fashion-stylist.onrender.com/uploads/${req.file.filename}`,
       error: err.toString()
     });
   }
 });
 
-// (Optional) Outfit Suggestion Example Route
+// POST /recommend to get outfit suggestions
 app.post("/recommend", express.json(), (req, res) => {
   const userFeatures = req.body;
   try {
