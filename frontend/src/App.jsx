@@ -2,46 +2,39 @@ import React, { useState, useRef } from "react";
 import UploadForm from "./components/UploadForm.jsx";
 import './style.css';
 
-const keywordImages = {
-  jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
-  tshirt: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-  "t-shirt": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-  shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
-  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739?auto=format&fit=crop&w=400&q=80",
-  saree: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
-  kurta: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
-  top: "https://images.unsplash.com/photo-1469398715555-76331c7888ba?auto=format&fit=crop&w=400&q=80",
-  shorts: "https://images.unsplash.com/photo-1514995669114-d1c1b0b22664?auto=format&fit=crop&w=400&q=80",
-  skirt: "https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=400&q=80",
-  "sports shoes": "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80",
-  gown: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-  blazer: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
-  "denim jacket": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
-  hoodie: "https://images.unsplash.com/photo-1469398715555-76331c7888ba?auto=format&fit=crop&w=400&q=80",
-  jacket: "https://images.unsplash.com/photo-1465101178521-c1a9136a6981?auto=format&fit=crop&w=400&q=80",
-  lehenga: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
-  watch: "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80",
-  handbag: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-  "cotton t-shirt": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=400&q=80"
-};
-
 const defaultFashionImg = "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg";
+
+// 👇👇👇 1. BACKEND API KA URL YAHA DAALO 👇👇👇
+const BACKEND_API_URL = "http://localhost:5050/search"; 
+// (Deploy kar doge to yahan live Render/Heroku ka public URL daal dena)
 
 export default function App() {
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const textInput = useRef();
 
-  function handleKeyword(keyword, sourceType = "image") {
-    if (keyword) {
-      setResults({
-        analysis: { type: sourceType, [sourceType === "text" ? "query" : "detected"]: keyword },
-        keyword
+  // Real products laane wala main function
+  async function searchProducts(keyword) {
+    setError("");
+    setResults(null);
+    if (!keyword) {
+      setError("Type something or select an image!");
+      return;
+    }
+    try {
+      const res = await fetch(BACKEND_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keyword })
       });
-      setError("");
-    } else {
-      setResults(null);
-      setError("Please enter text or select an image.");
+      const data = await res.json();
+      if (data.products?.length) {
+        setResults({ products: data.products, query: keyword });
+      } else {
+        setError("No results. Try another word!");
+      }
+    } catch (e) {
+      setError("API error: " + e.message);
     }
   }
 
@@ -50,30 +43,19 @@ export default function App() {
       (e.type === "keydown" && e.key === "Enter") ||
       (e.type === "click")
     ) {
-      const keyword = textInput.current.value.trim().toLowerCase();
+      const keyword = textInput.current.value.trim();
       if (keyword) {
-        handleKeyword(keyword, "text");
+        searchProducts(keyword);
         textInput.current.value = "";
-      } else if (e.type === "click") {
+      } else {
         setError("Please type something or select an image.");
       }
     }
   }
 
-  function getOutfitSources(keyword) {
-    if (!keyword) return [];
-    return [
-      {
-        name: "Amazon",
-        link: `https://www.amazon.in/s?k=${encodeURIComponent(keyword)}`,
-        img: "https://logodownload.org/wp-content/uploads/2014/04/amazon-logo-2.png"
-      },
-      {
-        name: "Flipkart",
-        link: `https://www.flipkart.com/search?q=${encodeURIComponent(keyword)}`,
-        img: "https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/flipkart-plus_8d85f4.png"
-      }
-    ];
+  // For UploadForm (image detection) - backend se analyze hoke keyword aaye, toh wohi use karo
+  function handleKeyword(keyword) {
+    if (keyword) searchProducts(keyword);
   }
 
   return (
@@ -87,24 +69,20 @@ export default function App() {
             style={{ background: "white", borderRadius: "13px", boxShadow: "0 3px 12px #efaefa65" }}
           />
         </div>
-
         <h1 className="main-title">AI Fashion Stylist</h1>
         <p className="main-tagline">Powered by AI • Styled for You</p>
         <p>Upload your photo <b>OR</b> type your style for outfit suggestions.</p>
-
         <div className="text-search-zone">
           <input
             ref={textInput}
             type="text"
             className="search-input"
-            placeholder='Type to search outfits (e.g. "jeans", "dress", "shirt", "kurta")'
+            placeholder='Type to search outfits (e.g. "jeans", "dress", "hair dryer", "shoes")'
             onKeyDown={handleTextOrButton}
             aria-label="Type outfit to search"
           />
         </div>
-
         <UploadForm setKeyword={handleKeyword} textInput={textInput} />
-
         <button
           className="analyze-btn"
           style={{
@@ -121,24 +99,11 @@ export default function App() {
         >
           Analyze Style
         </button>
-
         {error && (
           <div style={{ color: "red", marginTop: 10 }}>{error}</div>
         )}
-
         {results && (
           <div style={{ marginTop: "2rem" }}>
-            <h2>Analysis</h2>
-            <pre
-              style={{
-                background: "#f6f6f6",
-                padding: "1rem",
-                borderRadius: 8,
-                overflowX: "auto"
-              }}
-            >
-              {JSON.stringify(results.analysis, null, 2)}
-            </pre>
             <h2>Recommended Outfits</h2>
             <div
               style={{
@@ -147,7 +112,7 @@ export default function App() {
                 gap: "1.6rem"
               }}
             >
-              {getOutfitSources(results.keyword).map((site, i) => (
+              {results.products.map((item, i) => (
                 <div className="outfit-card" key={i} style={{
                   background: "#fff",
                   borderRadius: 14,
@@ -156,25 +121,21 @@ export default function App() {
                   textAlign: "center"
                 }}>
                   <img
-                    src={
-                      keywordImages[results.keyword] ||
-                      `https://source.unsplash.com/400x200/?${encodeURIComponent(results.keyword)}`
-                    }
+                    src={item.image || defaultFashionImg}
                     onError={e => { e.target.onerror = null; e.target.src = defaultFashionImg; }}
-                    alt={results.keyword}
+                    alt={item.name}
                     style={{ width: "100%", borderRadius: 8, height: 120, objectFit: "cover", marginBottom: 10 }}
                   />
                   <div style={{ margin: "1em 0" }}>
-                    <img src={site.img} alt={site.name} style={{ height: 28, verticalAlign: "middle", marginRight: 16 }} />
-                    <span>Browse {results.keyword} collection on {site.name}</span>
+                    <span style={{ fontWeight: 500 }}>{item.name}</span>
                   </div>
                   <a
-                    href={site.link}
+                    href={item.link}
                     className="promo-btn"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    View on {site.name}
+                    View Now
                   </a>
                 </div>
               ))}
@@ -182,7 +143,6 @@ export default function App() {
           </div>
         )}
       </div>
-
       <div className="promo-banner">
         <img
           src="https://placehold.co/80x80?text=Brand"
