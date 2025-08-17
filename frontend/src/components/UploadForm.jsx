@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 
-export default function UploadForm({ setKeyword, textInput }) {
+export default function UploadForm({ setKeyword, onImageSelect, textInput }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selected = e.target.files[0];
+    setFile(selected);
     setError("");
+    // Notify parent component on image select
+    if (onImageSelect) onImageSelect(selected);
   };
 
   const handleSubmit = async (e) => {
@@ -33,7 +36,7 @@ export default function UploadForm({ setKeyword, textInput }) {
         setError("Couldn't detect fashion keyword from image.");
       }
       setFile(null);
-      // Optionally clear file input visually (advanced: use a ref to reset if needed)
+      // Optionally clear file input visually
       if (textInput && textInput.current) textInput.current.value = "";
     } catch (err) {
       setError("Failed to analyze image.");
@@ -42,7 +45,7 @@ export default function UploadForm({ setKeyword, textInput }) {
   };
 
   return (
-    <form 
+    <form
       onSubmit={handleSubmit}
       style={{ display: "flex", alignItems: "center", marginBottom: 10 }}
       encType="multipart/form-data"
