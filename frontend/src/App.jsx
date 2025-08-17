@@ -23,8 +23,9 @@ const keywordImages = {
   watch: "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80",
   handbag: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
   "cotton t-shirt": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=400&q=80"
-  // Add as many as you want
 };
+
+const defaultFashionImg = "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg";
 
 export default function App() {
   const [results, setResults] = useState(null);
@@ -159,6 +160,7 @@ export default function App() {
                       keywordImages[results.keyword] ||
                       `https://source.unsplash.com/400x200/?${encodeURIComponent(results.keyword)}`
                     }
+                    onError={e => { e.target.onerror = null; e.target.src = defaultFashionImg; }}
                     alt={results.keyword}
                     style={{ width: "100%", borderRadius: 8, height: 120, objectFit: "cover", marginBottom: 10 }}
                   />
