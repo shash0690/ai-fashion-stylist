@@ -1,20 +1,21 @@
 {
-  "name": "ai-fashion-stylist-backend",
+  "name": "ai-fashion-backend",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node index.js"
+    "start": "node index.js"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@google-cloud/vision": "^4.3.3",
+    "@google-cloud/vision": "^5.3.3",
+    "cheerio": "^1.1.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.21.2",
-    "express-fileupload": "^1.5.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "node-fetch": "^3.3.2",
-    "openai": "^5.12.2"
-  }
+    "node-fetch": "^3.3.2"
+  },
+  "description": ""
 }

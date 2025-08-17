@@ -4,15 +4,19 @@ const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const vision = require('@google-cloud/vision');
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 // 2. Setup app and dynamic port
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// 3. Enable CORS for all origins (for frontend connections)
+// 3. CORS and JSON
 app.use(cors());
+app.use(express.json());
 
-// 4. Make uploads directory if it doesn't exist
+// 4. Make uploads directory if missing
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
@@ -29,7 +33,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   }
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 // 7. Health/root routes
 app.get('/', (req, res) => {
@@ -39,64 +43,57 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running!' });
 });
 
-// 8. Upload endpoint with all outfits (collection + individual products)
-app.post('/upload', upload.single('image'), (req, res) => {
+// 8. IMAGE UPLOAD + GOOGLE VISION ANALYSIS ENDPOINT
+app.post('/upload', upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  res.json({
-    message: 'File uploaded successfully (dummy response)',
-    filePath: `https://ai-fashion-stylist.onrender.com/uploads/${req.file.filename}`,
-    analysis: { style: 'casual', color: 'blue' },
-    outfits: [
-      // Amazon T-Shirts Collection
-      {
-        name: "Men's T-Shirts Collection",
-        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/s?k=mens+tshirt&tag=shash0690-21'
-      },
-      // Individual T-Shirts (examples)
-      {
-        name: 'Cotton T-Shirt',
-        image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B07C65XFBB/?tag=shash0690-21'
-      },
-      {
-        name: 'Plain White Tee',
-        image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B09V7ZLJ6H/?tag=shash0690-21'
-      },
-      {
-        name: 'Stylish Printed T-Shirt',
-        image: 'https://images.unsplash.com/photo-1513883049090-d0b7439799bf?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B08DD4K76K/?tag=shash0690-21'
-      },
-      // Existing demo products
-      {
-        name: 'Blue Jeans',
-        image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B07BJKRR25/?tag=shash0690-21'
-      },
-      {
-        name: 'White Sneakers',
-        image: 'https://images.unsplash.com/photo-1513267048330-cb2ee57bfb34?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B098DRT5Q4/?tag=shash0690-21'
-      },
-      {
-        name: 'Black T-Shirt',
-        image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in/dp/B07C65XFBB/?tag=shash0690-21'
-      },
-      {
-        name: 'Amazon Fashion Store',
-        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?fit=crop&w=400&q=80',
-        buyLink: 'https://www.amazon.in?&linkCode=ll2&tag=shash0690-21&linkId=5607bdebd0af466fdf41efec24f77c68&language=en_IN&ref_=as_li_ss_tl'
-      }
-    ]
-  });
+  const client = new vision.ImageAnnotatorClient();
+  try {
+    const localImagePath = path.join(__dirname, 'uploads', req.file.filename);
+    const [result] = await client.labelDetection(localImagePath);
+    const labels = result.labelAnnotations.map(label => label.description);
+    res.json({
+      message: 'File analyzed successfully!',
+      filePath: `/uploads/${req.file.filename}`,
+      labels: labels,
+      outfits: []
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to analyze image', details: err.message });
+  }
 });
 
-// 9. Dummy recommend endpoint
+// 9. AMAZON PRODUCT RECOMMENDATION ENDPOINT
+app.post("/search", async (req, res) => {
+  const { keyword } = req.body;
+  if (!keyword) return res.status(400).json({ error: "No keyword" });
+
+  try {
+    const url = `https://www.amazon.in/s?k=${encodeURIComponent(keyword)}`;
+    const response = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    let products = [];
+    $(".s-main-slot .s-result-item").each((_, el) => {
+      const name = $(el).find("h2 a span").text().trim();
+      const image = $(el).find("img.s-image").attr("src");
+      const link = "https://www.amazon.in" + ($(el).find("h2 a").attr("href") || "");
+      if (name && image) products.push({ name, image, link });
+      if (products.length >= 2) return false;
+    });
+    if (products.length === 0) products.push({
+      name: keyword,
+      image: "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg",
+      link: url
+    });
+    res.json({ products });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch products", details: err.message });
+  }
+});
+
+// 10. DUMMY RECOMMEND ENDPOINT (OPTIONAL)
 app.post('/recommend', express.json(), (req, res) => {
   res.json({
     suggestions: [
@@ -106,7 +103,7 @@ app.post('/recommend', express.json(), (req, res) => {
   });
 });
 
-// 10. Start server on dynamic port for Render
+// 11. START SERVER
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
