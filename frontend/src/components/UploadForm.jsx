@@ -1,23 +1,17 @@
 import React, { useState } from "react";
 
-export default function UploadForm({ setKeyword }) {
+export default function UploadForm({ setKeyword, textInput }) {
   const [file, setFile] = useState(null);
-  const [error, setError] = useState("");
-  const [analysis, setAnalysis] = useState(null);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    setError("");
-    setAnalysis(null);
   };
 
+  // Jab button dabega aur file hogi, image analyze ho; nahin toh kuch nahi (parent handle karega text)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) {
-      // Agar image nahi hai, toh kuch bhi na karo,
-      // error bhi mat dikhao, kyunki text search allow hai.
-      return;
-    }
+    if (!file) return;
+
     const formData = new FormData();
     formData.append("image", file);
 
@@ -28,45 +22,26 @@ export default function UploadForm({ setKeyword }) {
       });
       if (!res.ok) throw new Error("Upload failed");
       const data = await res.json();
-      setAnalysis(data);
-
       if (setKeyword && data.labels && data.labels.length > 0) {
-        setKeyword(data.labels[0]);
+        setKeyword(data.labels[0], "image");
       }
+      setFile(null);
+      // Optional: Clear file input visual (if needed)
+      if (textInput && textInput.current) textInput.current.value = "";
     } catch (err) {
-      setError("Image analyze failed");
+      if (setKeyword) setKeyword(null); // trigger error on parent
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-        <button type="submit">Analyze Style</button>
-      </form>
-      {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
-      {analysis && (
-        <div style={{ marginTop: 20 }}>
-          <div>
-            <b>Analysis Result:</b>
-            <pre>{JSON.stringify(analysis, null, 2)}</pre>
-          </div>
-          {analysis.labels && (
-            <div>
-              <b>Detected Labels:</b>
-              <ul>
-                {analysis.labels.map((label, i) => (
-                  <li key={i}>{label}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+    <form onSubmit={handleSubmit} style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{ marginRight: 10 }}
+      />
+      {/* Button UI ab App.js se manage hoga, yahan default submit se bhi ho jayega */}
+    </form>
   );
 }

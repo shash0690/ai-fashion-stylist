@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import UploadForm from "./components/UploadForm.jsx";
 import './style.css';
 
@@ -7,33 +7,46 @@ const keywordImages = {
   jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
   shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
   dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739"
-  // aur bhi add kar sakte ho
+  // Add more as needed
 };
 
 export default function App() {
   const [results, setResults] = useState(null);
+  const [error, setError] = useState("");
+  const textInput = useRef();
 
-  // Yahaan UploadForm se keyword aayega jab image analyze ho
-  function handleImageDetected(keyword) {
-    setResults({
-      analysis: { type: "image", detected: keyword },
-      keyword: keyword
-    });
-  }
-
-  // Text-based search (input box se Enter dabane par)
-  function handleTextSearch(e) {
-    if (e.key === "Enter" && e.target.value.trim()) {
-      const keyword = e.target.value.trim().toLowerCase();
+  // Called by UploadForm (image analyze) OR our own fallback (text)
+  function handleKeyword(keyword, sourceType = "image") {
+    if (keyword) {
       setResults({
-        analysis: { type: "text", query: keyword },
-        keyword: keyword
+        analysis: { type: sourceType, [sourceType === "text" ? "query" : "detected"]: keyword },
+        keyword
       });
-      e.target.value = "";
+      setError("");
+    } else {
+      setResults(null);
+      setError("Please enter text or select an image.");
     }
   }
 
-  // Amazon/Flipkart cards banane ka logic
+  // Text-based search (input box ya button dono se)
+  function handleTextOrButton(e) {
+    // Allow Enter key or search on button
+    if (
+      (e.type === "keydown" && e.key === "Enter") ||
+      (e.type === "click")
+    ) {
+      const keyword = textInput.current.value.trim().toLowerCase();
+      if (keyword) {
+        handleKeyword(keyword, "text");
+        textInput.current.value = "";
+      } else if (e.type === "click") {
+        setError("Please type something or select an image.");
+      }
+    }
+  }
+
+  // Outfit cards
   function getOutfitSources(keyword) {
     if (!keyword) return [];
     return [
@@ -44,7 +57,8 @@ export default function App() {
       },
       {
         name: "Flipkart",
-        link: `https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/flipkart-plus_8d85f4.png"
+        link: `https://www.flipkart.com/search?q=${encodeURIComponent(keyword)}`,
+        img: "https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/flipkart-plus_8d85f4.png"
       }
     ];
   }
@@ -67,15 +81,37 @@ export default function App() {
 
         <div className="text-search-zone">
           <input
+            ref={textInput}
             type="text"
             className="search-input"
             placeholder='Type to search outfits (e.g. "jeans", "dress", "shirt")'
-            onKeyDown={handleTextSearch}
+            onKeyDown={handleTextOrButton}
             aria-label="Type outfit to search"
           />
         </div>
 
-        <UploadForm setKeyword={handleImageDetected} />
+        <UploadForm setKeyword={handleKeyword} textInput={textInput} />
+
+        <button
+          className="analyze-btn"
+          style={{
+            marginTop: 10,
+            marginBottom: 10,
+            background: "#50247b",
+            color: "#fff",
+            border: "none",
+            borderRadius: "24px",
+            fontSize: "1.2rem",
+            padding: "0.5em 2em"
+          }}
+          onClick={handleTextOrButton}
+        >
+          Analyze Style
+        </button>
+
+        {error && (
+          <div style={{ color: "red", marginTop: 10 }}>{error}</div>
+        )}
 
         {results && (
           <div style={{ marginTop: "2rem" }}>
@@ -132,25 +168,3 @@ export default function App() {
 
       <div className="promo-banner">
         <img
-          src="https://placehold.co/80x80?text=Brand"
-          alt="Brand Logo"
-          className="promo-logo"
-        />
-        <div className="promo-text">
-          <span>🔥 Trending Offer:</span>
-          <br />
-          <strong>Get 30% Off on Branded Shoes!</strong>
-          <br />
-          <a
-            href="https://www.example.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="promo-btn"
-          >
-            Shop Now
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
