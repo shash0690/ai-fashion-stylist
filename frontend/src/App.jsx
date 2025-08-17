@@ -2,18 +2,38 @@ import React, { useState } from "react";
 import UploadForm from "./components/UploadForm.jsx";
 import './style.css';
 
-// Simple mapping of keyword to sample display image for UI
+// Sample keyword to image mapping
 const keywordImages = {
-  "jeans":  "https://img.freepik.com/free-photo/blue-jeans.jpg",
-  "shirt":  "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-  "dress":  "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739",
+  jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
+  shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
+  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739"
   // Add more as needed
 };
 
 export default function App() {
   const [results, setResults] = useState(null);
 
-  // FINAL: This function creates recommended cards for Amazon and Flipkart
+  // Used by UploadForm to set the recognized AI label
+  function handleImageDetected(keyword) {
+    setResults({
+      analysis: { type: "image", detected: keyword },
+      keyword: keyword
+    });
+  }
+
+  // Text search handler for manual outfit input (optional)
+  function handleTextSearch(e) {
+    if (e.key === "Enter" && e.target.value.trim()) {
+      const keyword = e.target.value.trim().toLowerCase();
+      setResults({
+        analysis: { type: "text", query: keyword },
+        keyword: keyword
+      });
+      e.target.value = "";
+    }
+  }
+
+  // Outfit sources (Amazon/Flipkart cards)
   function getOutfitSources(keyword) {
     if (!keyword) return [];
     return [
@@ -30,26 +50,6 @@ export default function App() {
     ];
   }
 
-  // Text search handler
-  function handleTextSearch(e) {
-    if (e.key === "Enter" && e.target.value.trim()) {
-      const keyword = e.target.value.trim().toLowerCase();
-      setResults({
-        analysis: { type: "text", query: keyword },
-        keyword: keyword // Save detected keyword
-      });
-      e.target.value = "";
-    }
-  }
-
-  // For image-based results, UploadForm will call setResults with { keyword }
-  function handleImageDetected(keyword) {
-    setResults({
-      analysis: { type: "image", detected: keyword },
-      keyword: keyword
-    });
-  }
-
   return (
     <div className="hero-bg">
       <div className="main-card">
@@ -58,11 +58,7 @@ export default function App() {
             src="https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@latest/color/svg/1F97C.svg"
             height={49}
             alt="Fashion Logo"
-            style={{
-              background: "white",
-              borderRadius: "13px",
-              boxShadow: "0 3px 12px #efaefa65"
-            }}
+            style={{ background: "white", borderRadius: "13px", boxShadow: "0 3px 12px #efaefa65" }}
           />
         </div>
 
@@ -80,7 +76,6 @@ export default function App() {
           />
         </div>
 
-        {/* UploadForm calls setResults directly with keyword for demo; for production, pass a handler */}
         <UploadForm setKeyword={handleImageDetected} />
 
         {results && (
@@ -112,7 +107,7 @@ export default function App() {
                   padding: "1rem",
                   textAlign: "center"
                 }}>
-                  <img 
+                  <img
                     src={keywordImages[results.keyword] || "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg"}
                     alt={results.keyword}
                     style={{ width: "100%", borderRadius: 8, height: 120, objectFit: "cover", marginBottom: 10 }}
