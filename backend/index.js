@@ -5,24 +5,34 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const vision = require('@google-cloud/vision');
-const fetch = require('node-fetch');
+let fetch;
+try {
+  fetch = global.fetch ? global.fetch : require('node-fetch');
+} catch (e) {
+  fetch = require('node-fetch');
+}
 const cheerio = require('cheerio');
+
 
 // 2. Setup app and dynamic port
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
 // 3. CORS and JSON
 app.use(cors());
 app.use(express.json());
+
 
 // 4. Make uploads directory if missing
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
+
 // 5. Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // 6. Multer config for file uploads
 const storage = multer.diskStorage({
@@ -35,6 +45,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+
 // 7. Health/root routes
 app.get('/', (req, res) => {
   res.send('AI Fashion Stylist backend is running!');
@@ -42,6 +53,7 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running!' });
 });
+
 
 // 8. IMAGE UPLOAD + GOOGLE VISION ANALYSIS ENDPOINT
 app.post('/upload', upload.single('image'), async (req, res) => {
@@ -64,10 +76,12 @@ app.post('/upload', upload.single('image'), async (req, res) => {
   }
 });
 
+
 // 9. AMAZON PRODUCT RECOMMENDATION ENDPOINT
 app.post("/search", async (req, res) => {
   const { keyword } = req.body;
   if (!keyword) return res.status(400).json({ error: "No keyword" });
+
 
   try {
     const url = `https://www.amazon.in/s?k=${encodeURIComponent(keyword)}`;
@@ -93,6 +107,7 @@ app.post("/search", async (req, res) => {
   }
 });
 
+
 // 10. DUMMY RECOMMEND ENDPOINT (OPTIONAL)
 app.post('/recommend', express.json(), (req, res) => {
   res.json({
@@ -102,6 +117,7 @@ app.post('/recommend', express.json(), (req, res) => {
     ]
   });
 });
+
 
 // 11. START SERVER
 app.listen(PORT, () => {
