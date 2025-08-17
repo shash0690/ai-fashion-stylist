@@ -1,165 +1,35 @@
-:root {
-  --primary: #DE354C;
-  --accent: #3C1874;
-  --bg-gradient: linear-gradient(120deg, #ffd6e0 0%, #e7f0fd 100%);
-  --card-bg: #FFF;
-  --shadow: rgba(60,24,116,0.12);
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg-gradient);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-bg {
-  width: 100vw;
-  min-height: 100vh;
+.site-logo {
+  margin: 0 auto 0.5rem auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 48px;
 }
-
-.main-card {
-  background: var(--card-bg);
-  box-shadow: 0 4px 24px var(--shadow);
-  border-radius: 22px;
-  padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 370px;
-  margin: auto;
-  text-align: center;
-  animation: card-pop 1.1s cubic-bezier(.5,1.4,.5,1) both;
+.main-title {
+  background: linear-gradient(90deg,#de354c 30%,#5936b4 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-size: 2.35rem;
+  margin-bottom: 0.2rem;
 }
-
-@keyframes card-pop {
-  0% { transform: scale(0.92) rotate(2deg); opacity: 0.7; }
-  100% { transform: scale(1) rotate(0); opacity: 1; }
-}
-
-h1 {
-  color: var(--primary);
-  font-size: 2.2rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-p {
-  font-size: 1.1rem;
-  color: var(--accent);
-}
-
-.upload-zone {
-  margin-top: 1.7rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.3rem;
-}
-
-.upload-btn {
-  display: inline-block;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 30px;
-  padding: 0.75em 2em;
-  cursor: pointer;
+.main-tagline {
+  color: #7e5ffa;
   font-size: 1rem;
-  box-shadow: 0 2px 8px var(--shadow);
-  transition: background 0.2s, scale 0.18s;
+  font-weight: 500;
+  margin-top: -0.2rem;
+  margin-bottom: 0.7rem;
+  opacity: 0.87;
 }
-
-.upload-btn:hover {
-  background: var(--accent);
-  scale: 1.08;
-}
-
-.analyze-btn {
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 30px;
-  padding: 0.7em 2em;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px var(--shadow);
-  cursor: pointer;
-  transition: background 0.22s, scale 0.15s;
-}
-
-.analyze-btn:hover {
-  background: var(--primary);
-  scale: 1.07;
-}
-
-/* Promo Banner */
+/* Promo Banner Thoda aur shine kare */
 .promo-banner {
-  position: fixed;
-  bottom: 24px;
-  right: 22px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(60,24,116,0.11);
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeUp 1s;
+  box-shadow: 0 4px 24px rgba(60,24,116,0.18), 0 0 16px 2px #ca54f84c;
 }
-
-.promo-logo {
-  height: 60px;
-  width: 60px;
-  border-radius: 12px;
-  margin-right: 1rem;
-  background: #eee;
-}
-
-.promo-text span {
-  color: #DE354C;
-  font-size: 0.98rem;
-}
-
 .promo-text strong {
-  color: #3C1874;
-  font-size: 1.08rem;
+  animation: promo-glow 1.8s infinite alternate;
 }
-
-.promo-btn {
-  margin-top: 6px;
-  display: inline-block;
-  background: #DE354C;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 22px;
-  padding: 0.35em 1em;
-  font-weight: 600;
-  font-size: 0.97rem;
-  box-shadow: 0 2px 7px rgba(60,24,116,0.10);
-  transition: background 0.18s;
-}
-
-.promo-btn:hover {
-  background: #3C1874;
-}
-
-@keyframes fadeUp {
-  0% { transform: translateY(30px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-/* Responsive Design */
-@media (max-width: 500px) {
-  .main-card {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
-    max-width: 99vw;
-  }
-  h1 {
-    font-size: 1.28rem;
-  }
+@keyframes promo-glow {
+  0% { text-shadow: 0 0 6px #de354c50, 0 0 0 #fff;}
+  100% { text-shadow: 0 0 18px #fd93b7, 0 0 6px #fff;}
 }

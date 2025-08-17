@@ -9,7 +9,14 @@ export default function App() {
   return (
     <div className="hero-bg">
       <div className="main-card">
-        <h1>AI Fashion Stylist</h1>
+        {/* ----------- START: Added logo, gradient title, tagline ------------ */}
+        <div className="site-logo">
+          <img src="https://cdn-icons-png.flaticon.com/128/2991/2991148.png" height={48} alt="AI Fashion Stylist Logo"/>
+        </div>
+        <h1 className="main-title">AI Fashion Stylist</h1>
+        <p className="main-tagline">Powered by AI • Styled for You</p>
+        {/* ----------- END: Added logo, gradient title, tagline ------------ */}
+
         <p>Upload your photo to get personalised outfit suggestions.</p>
         <UploadForm setResults={setResults} />
 
