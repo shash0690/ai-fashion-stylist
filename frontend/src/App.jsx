@@ -6,21 +6,53 @@ import './style.css';
 export default function App() {
   const [results, setResults] = useState(null);
 
+  // Text search handler
+  function handleTextSearch(e) {
+    if (e.key === "Enter" && e.target.value.trim()) {
+      setResults({
+        analysis: { type: "text", query: e.target.value },
+        outfits: []
+      });
+      e.target.value = "";
+    }
+  }
+
   return (
     <div className="hero-bg">
       <div className="main-card">
+        {/* Unique Fashion Emoji/AI Icon */}
         <div className="site-logo">
           <img
-            src="https://cdn-icons-png.flaticon.com/128/2991/2991148.png"
-            height={48}
-            alt="AI Fashion Stylist Logo"
+            src="https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@latest/color/svg/1F97C.svg"
+            height={49}
+            alt="Fashion Logo"
+            style={{
+              background: "white",
+              borderRadius: "13px",
+              boxShadow: "0 3px 12px #efaefa65"
+            }}
           />
         </div>
+
         <h1 className="main-title">AI Fashion Stylist</h1>
         <p className="main-tagline">Powered by AI • Styled for You</p>
-        <p>Upload your photo to get personalised outfit suggestions.</p>
+        <p>Upload your photo <b>OR</b> type your style for outfit suggestions.</p>
+
+        {/* Text Search Bar */}
+        <div className="text-search-zone">
+          <input
+            type="text"
+            className="search-input"
+            placeholder='Type to search outfits (e.g. "red dress", "blazer", "black jeans")'
+            onKeyDown={handleTextSearch}
+            aria-label="Type outfit to search"
+          />
+        </div>
+
+        {/* File Upload */}
         <UploadForm setResults={setResults} />
 
+        {/* Results Display */}
         {results && (
           <div style={{ marginTop: "2rem" }}>
             <h2>Analysis</h2>
