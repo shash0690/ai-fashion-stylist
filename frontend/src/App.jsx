@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import UploadForm from "./components/UploadForm.jsx";
 import './style.css';
 
-// Sample keyword to image mapping
+// Sample mapping for demo images
 const keywordImages = {
   jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
   shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
   dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739"
-  // Add more as needed
+  // aur bhi add kar sakte ho
 };
 
 export default function App() {
   const [results, setResults] = useState(null);
 
-  // Used by UploadForm to set the recognized AI label
+  // Yahaan UploadForm se keyword aayega jab image analyze ho
   function handleImageDetected(keyword) {
     setResults({
       analysis: { type: "image", detected: keyword },
@@ -21,7 +21,7 @@ export default function App() {
     });
   }
 
-  // Text search handler for manual outfit input (optional)
+  // Text-based search (input box se Enter dabane par)
   function handleTextSearch(e) {
     if (e.key === "Enter" && e.target.value.trim()) {
       const keyword = e.target.value.trim().toLowerCase();
@@ -33,7 +33,7 @@ export default function App() {
     }
   }
 
-  // Outfit sources (Amazon/Flipkart cards)
+  // Amazon/Flipkart cards banane ka logic
   function getOutfitSources(keyword) {
     if (!keyword) return [];
     return [
@@ -44,8 +44,7 @@ export default function App() {
       },
       {
         name: "Flipkart",
-        link: `https://www.flipkart.com/search?q=${encodeURIComponent(keyword)}`,
-        img: "https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/flipkart-plus_8d85f4.png"
+        link: `https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/flipkart-plus_8d85f4.png"
       }
     ];
   }
@@ -133,7 +132,7 @@ export default function App() {
 
       <div className="promo-banner">
         <img
-          src="https://via.placeholder.com/80x80?text=Brand"
+          src="https://placehold.co/80x80?text=Brand"
           alt="Brand Logo"
           className="promo-logo"
         />

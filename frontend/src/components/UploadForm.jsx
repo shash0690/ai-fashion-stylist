@@ -14,10 +14,10 @@ export default function UploadForm({ setKeyword }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      setError("No file selected");
+      // Agar image nahi hai, toh kuch bhi na karo,
+      // error bhi mat dikhao, kyunki text search allow hai.
       return;
     }
-
     const formData = new FormData();
     formData.append("image", file);
 
@@ -30,7 +30,6 @@ export default function UploadForm({ setKeyword }) {
       const data = await res.json();
       setAnalysis(data);
 
-      // Parent ko top AI fashion label bhejo
       if (setKeyword && data.labels && data.labels.length > 0) {
         setKeyword(data.labels[0]);
       }
@@ -49,5 +48,25 @@ export default function UploadForm({ setKeyword }) {
         />
         <button type="submit">Analyze Style</button>
       </form>
-
-      {error && <div style={{ color: "red", margin
+      {error && <div style={{ color: "red", marginTop: 10 }}>{error}</div>}
+      {analysis && (
+        <div style={{ marginTop: 20 }}>
+          <div>
+            <b>Analysis Result:</b>
+            <pre>{JSON.stringify(analysis, null, 2)}</pre>
+          </div>
+          {analysis.labels && (
+            <div>
+              <b>Detected Labels:</b>
+              <ul>
+                {analysis.labels.map((label, i) => (
+                  <li key={i}>{label}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
