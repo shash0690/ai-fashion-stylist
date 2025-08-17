@@ -48,6 +48,7 @@ body {
   align-items: center;
   height: 48px;
 }
+
 .main-title {
   background: linear-gradient(90deg,#de354c 30%,#5936b4 90%);
   -webkit-background-clip: text;
@@ -56,14 +57,17 @@ body {
   letter-spacing: 0.5px;
   font-size: 2.35rem;
   margin-bottom: 0.2rem;
+  text-shadow: 2px 3px 8px #df9ee22a, 0 2px 20px #7430e55c;
 }
+
 .main-tagline {
   color: #7e5ffa;
   font-size: 1rem;
   font-weight: 500;
   margin-top: -0.2rem;
   margin-bottom: 0.7rem;
-  opacity: 0.87;
+  opacity: 0.9;
+  text-shadow: 0 1.5px 8px #b085f77c;
 }
 
 h1, h2 {
@@ -144,14 +148,16 @@ p {
 }
 
 .promo-text span {
-  color: #de354c;
+  color: #DE354C;
   font-size: 0.98rem;
+  font-weight: 600;
 }
 
 .promo-text strong {
   color: #3C1874;
   font-size: 1.08rem;
   animation: promo-glow 1.8s infinite alternate;
+  text-shadow: 1px 2px 12px #de354c2c;
 }
 
 @keyframes promo-glow {
