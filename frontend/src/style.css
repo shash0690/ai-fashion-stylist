@@ -205,4 +205,17 @@ p {
 }
 
 @keyframes fadeUp {
-  0% { transform
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  .main-card {
+    padding: 1.2rem 0.7rem 1rem 0.7rem;
+    max-width: 99vw;
+  }
+  h1 {
+    font-size: 1.28rem;
+  }
+}
