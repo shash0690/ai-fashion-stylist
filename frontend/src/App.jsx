@@ -12,6 +12,7 @@ export default function App() {
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const textInput = useRef();
+  const [selectedImage, setSelectedImage] = useState(null); // Image state to track selected file
 
   // Product search function
   async function searchProducts(keyword) {
@@ -44,18 +45,36 @@ export default function App() {
       (e.type === "click")
     ) {
       const keyword = textInput.current.value.trim();
+
+      // Validation: show error only if BOTH text and image are missing
+      if (!keyword && !selectedImage) {
+        setError("Please type something or select an image.");
+        return;
+      }
+
       if (keyword) {
         searchProducts(keyword);
         textInput.current.value = "";
-      } else {
-        setError("Please type something or select an image.");
+        setSelectedImage(null); // reset image after search by text
+      } else if (selectedImage) {
+        // If image selected but no text, you can trigger backend call with image keyword from UploadForm (handled separately)
+        setError(""); // clear error in case it was set before
       }
     }
   }
 
   // For UploadForm (image detection) - backend se analyze hoke keyword aaye, toh wohi use karo
   function handleKeyword(keyword) {
-    if (keyword) searchProducts(keyword);
+    if (keyword) {
+      setSelectedImage(null); // reset image when keyword comes from backend
+      searchProducts(keyword);
+    }
+  }
+
+  // Listen to image selection from UploadForm, pass an updater function there (Add this if UploadForm supports)
+  function onImageSelect(file) {
+    setSelectedImage(file);
+    setError(""); // clear error on image select
   }
 
   return (
@@ -82,18 +101,19 @@ export default function App() {
             aria-label="Type outfit to search"
           />
         </div>
-        <UploadForm setKeyword={handleKeyword} textInput={textInput} />
+        {/* Pass setSelectedImage or onImageSelect to UploadForm to update image state */}
+        <UploadForm setKeyword={handleKeyword} onImageSelect={onImageSelect} textInput={textInput} />
         <button
           className="analyze-btn"
           style={{
-            marginTop: 10,
-            marginBottom: 10,
-            background: "#50247b",
-            color: "#fff",
-            border: "none",
-            borderRadius: "24px",
-            fontSize: "1.2rem",
-            padding: "0.5em 2em"
+             marginTop: 10,
+             marginBottom: 10,
+             background: "#50247b",
+             color: "#fff",
+             border: "none",
+             borderRadius: "24px",
+             fontSize: "1.2rem",
+             padding: "0.5em 2em"
           }}
           onClick={handleTextOrButton}
         >
