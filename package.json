@@ -1,0 +1,17 @@
+{
+  "name": "ai-fashion-stylist",
+  "version": "1.0.0",
+  "description": "A minimal, ready-to-run skeleton for an AI-powered fashion stylist web app (frontend + backend).",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vite": "^7.1.2"
+  }
+}
