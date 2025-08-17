@@ -4,16 +4,16 @@ import './style.css';
 
 const defaultFashionImg = "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg";
 
-// 👇👇👇 1. BACKEND API KA URL YAHA DAALO 👇👇👇
-const BACKEND_API_URL = "http://localhost:5050/search"; 
-// (Deploy kar doge to yahan live Render/Heroku ka public URL daal dena)
+// 👇👇👇 1. BACKEND API KA URL Update Karo Yahan 👇👇👇
+const BACKEND_API_URL = "https://ai-fashion-stylist-1.onrender.com/search";
+// (Ye Render ka public backend URL hai. Localhost mat use karo production me)
 
 export default function App() {
   const [results, setResults] = useState(null);
   const [error, setError] = useState("");
   const textInput = useRef();
 
-  // Real products laane wala main function
+  // Product search function
   async function searchProducts(keyword) {
     setError("");
     setResults(null);
