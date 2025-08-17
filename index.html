@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fashion Stylist</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Fashion Stylist</title>
+  <!-- Google Fonts for Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;400&display=swap" rel="stylesheet">
+  <!-- Linking CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>👗 AI Fashion Stylist</h1>
-    <input type="text" id="userInput" placeholder="Enter your style preference">
-    <button id="generateBtn">Get Suggestions</button>
-    <div id="result"></div>
+  <!-- Main Home Content -->
+  <div class="hero-bg">
+    <div class="main-card">
+      <h1>AI Fashion Stylist</h1>
+      <p>Upload your photo to get personalised outfit suggestions.</p>
+      <div class="upload-zone">
+        <input type="file" id="file-upload" hidden />
+        <label for="file-upload" class="upload-btn">
+          <span>📷 Choose File</span>
+        </label>
+        <button class="analyze-btn">Analyze Style</button>
+      </div>
+    </div>
+  </div>
 
-    <script src="main.js" type="module"></script>
+  <!-- Promotion Banner -->
+  <div class="promo-banner">
+    <img src="https://via.placeholder.com/80x80?text=Brand" alt="Brand Logo" class="promo-logo" />
+    <div class="promo-text">
+      <span>🔥 Trending Offer:</span><br>
+      <strong>Get 30% Off on Branded Shoes!</strong><br>
+      <a href="https://www.example.com" target="_blank" class="promo-btn">Shop Now</a>
+    </div>
+  </div>
+
+  <script src="main.js" type="module"></script>
 </body>
 </html>
