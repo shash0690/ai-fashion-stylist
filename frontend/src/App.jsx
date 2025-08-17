@@ -2,12 +2,18 @@ import React, { useState, useRef } from "react";
 import UploadForm from "./components/UploadForm.jsx";
 import './style.css';
 
-// Sample mapping for demo images
 const keywordImages = {
   jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
   shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739"
-  // Add more as needed
+  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739",
+  tishart: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+  tshirt: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+  "t-shirt": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+  kurta: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+  top: "https://images.unsplash.com/photo-1469398715555-76331c7888ba",
+  saree: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+  shorts: "https://images.unsplash.com/photo-1514995669114-d1c1b0b22664"
+  // aur bhi zarurat ho toh add kar sakte ho
 };
 
 export default function App() {
@@ -15,7 +21,6 @@ export default function App() {
   const [error, setError] = useState("");
   const textInput = useRef();
 
-  // Called by UploadForm (image analyze) OR our own fallback (text)
   function handleKeyword(keyword, sourceType = "image") {
     if (keyword) {
       setResults({
@@ -29,9 +34,7 @@ export default function App() {
     }
   }
 
-  // Text-based search (input box ya button dono se)
   function handleTextOrButton(e) {
-    // Allow Enter key or search on button
     if (
       (e.type === "keydown" && e.key === "Enter") ||
       (e.type === "click")
@@ -46,7 +49,6 @@ export default function App() {
     }
   }
 
-  // Outfit cards
   function getOutfitSources(keyword) {
     if (!keyword) return [];
     return [
@@ -143,7 +145,8 @@ export default function App() {
                   textAlign: "center"
                 }}>
                   <img
-                    src={keywordImages[results.keyword] || "https://img.freepik.com/free-vector/fashion-banner-design_1300-113.jpg"}
+                    src={keywordImages[results.keyword] ||
+                      `https://source.unsplash.com/400x200/?${encodeURIComponent(results.keyword)}` }
                     alt={results.keyword}
                     style={{ width: "100%", borderRadius: 8, height: 120, objectFit: "cover", marginBottom: 10 }}
                   />
@@ -168,3 +171,25 @@ export default function App() {
 
       <div className="promo-banner">
         <img
+          src="https://placehold.co/80x80?text=Brand"
+          alt="Brand Logo"
+          className="promo-logo"
+        />
+        <div className="promo-text">
+          <span>🔥 Trending Offer:</span>
+          <br />
+          <strong>Get 30% Off on Branded Shoes!</strong>
+          <br />
+          <a
+            href="https://www.example.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="promo-btn"
+          >
+            Shop Now
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
