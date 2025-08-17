@@ -4,16 +4,26 @@ import './style.css';
 
 const keywordImages = {
   jeans: "https://img.freepik.com/free-photo/blue-jeans.jpg",
-  shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9",
-  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739",
-  tishart: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
-  tshirt: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
-  "t-shirt": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
-  kurta: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
-  top: "https://images.unsplash.com/photo-1469398715555-76331c7888ba",
-  saree: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-  shorts: "https://images.unsplash.com/photo-1514995669114-d1c1b0b22664"
-  // aur bhi zarurat ho toh add kar sakte ho
+  tshirt: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+  "t-shirt": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+  shirt: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+  dress: "https://images.unsplash.com/photo-1517260911080-4f7f0c8d5739?auto=format&fit=crop&w=400&q=80",
+  saree: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
+  kurta: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80",
+  top: "https://images.unsplash.com/photo-1469398715555-76331c7888ba?auto=format&fit=crop&w=400&q=80",
+  shorts: "https://images.unsplash.com/photo-1514995669114-d1c1b0b22664?auto=format&fit=crop&w=400&q=80",
+  skirt: "https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?auto=format&fit=crop&w=400&q=80",
+  "sports shoes": "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=400&q=80",
+  gown: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+  blazer: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80",
+  "denim jacket": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
+  hoodie: "https://images.unsplash.com/photo-1469398715555-76331c7888ba?auto=format&fit=crop&w=400&q=80",
+  jacket: "https://images.unsplash.com/photo-1465101178521-c1a9136a6981?auto=format&fit=crop&w=400&q=80",
+  lehenga: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=400&q=80",
+  watch: "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=400&q=80",
+  handbag: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
+  "cotton t-shirt": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=400&q=80"
+  // Add as many as you want
 };
 
 export default function App() {
@@ -86,7 +96,7 @@ export default function App() {
             ref={textInput}
             type="text"
             className="search-input"
-            placeholder='Type to search outfits (e.g. "jeans", "dress", "shirt")'
+            placeholder='Type to search outfits (e.g. "jeans", "dress", "shirt", "kurta")'
             onKeyDown={handleTextOrButton}
             aria-label="Type outfit to search"
           />
@@ -145,8 +155,10 @@ export default function App() {
                   textAlign: "center"
                 }}>
                   <img
-                    src={keywordImages[results.keyword] ||
-                      `https://source.unsplash.com/400x200/?${encodeURIComponent(results.keyword)}` }
+                    src={
+                      keywordImages[results.keyword] ||
+                      `https://source.unsplash.com/400x200/?${encodeURIComponent(results.keyword)}`
+                    }
                     alt={results.keyword}
                     style={{ width: "100%", borderRadius: 8, height: 120, objectFit: "cover", marginBottom: 10 }}
                   />
