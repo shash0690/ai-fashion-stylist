@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 
-export default function UploadForm({ setResults, results }) {
+// For production, this would contain real image recognition. Here it's basic for demo.
+const detectKeywordFromImage = (file) => {
+  // In real app, use API to detect label! Here we just fake by extension for demo.
+  const name = file?.name?.toLowerCase() || "";
+  if (name.includes("shirt")) return "shirt";
+  if (name.includes("jeans")) return "jeans";
+  if (name.includes("dress")) return "dress";
+  return "fashion";
+};
+
+export default function UploadForm({ setKeyword }) {
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
 
@@ -11,19 +21,14 @@ export default function UploadForm({ setResults, results }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // If both file and prior text search absent, only then show error
-    if (!file && !results) {
-      setError("Please select an image, or use the text box above.");
+    if (!file) {
+      setError("Please select an image to analyze, or use the text box above.");
       return;
     }
     setError("");
-    // Mock image analysis, you can hook up API call here
-    if (file) {
-      setResults({
-        analysis: { type: "image", fileName: file.name },
-        outfits: []
-      });
-    }
+    // In production, replace this with image recognition API logic
+    const keyword = detectKeywordFromImage(file);
+    setKeyword(keyword);
   };
 
   return (
