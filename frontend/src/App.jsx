@@ -11,7 +11,7 @@ export default function App() {
     if (e.key === "Enter" && e.target.value.trim()) {
       setResults({
         analysis: { type: "text", query: e.target.value },
-        outfits: []
+        outfits: [] // You can hook this to your API later
       });
       e.target.value = "";
     }
@@ -49,8 +49,8 @@ export default function App() {
           />
         </div>
 
-        {/* File Upload */}
-        <UploadForm setResults={setResults} />
+        {/* File Upload: pass results as prop */}
+        <UploadForm setResults={setResults} results={results} />
 
         {/* Results Display */}
         {results && (

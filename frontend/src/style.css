@@ -87,18 +87,22 @@ p {
   gap: 1.3rem;
 }
 
-.upload-btn {
+.upload-btn, .analyze-btn {
   display: inline-block;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 600;
   border-radius: 30px;
-  padding: 0.75em 2em;
-  cursor: pointer;
+  font-weight: 600;
+  padding: 0.7em 2em;
   font-size: 1rem;
   box-shadow: 0 2px 8px var(--shadow);
   border: none;
-  transition: background 0.2s, scale 0.18s;
+  cursor: pointer;
+  transition: background 0.22s, scale 0.18s;
+}
+
+.upload-btn {
+  background: var(--primary);
+  color: #fff;
+  margin-bottom: 1rem;
 }
 
 .upload-btn:hover {
@@ -109,19 +113,35 @@ p {
 .analyze-btn {
   background: var(--accent);
   color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 30px;
-  padding: 0.7em 2em;
-  font-size: 1rem;
-  box-shadow: 0 2px 8px var(--shadow);
-  cursor: pointer;
-  transition: background 0.22s, scale 0.15s;
 }
 
 .analyze-btn:hover {
   background: var(--primary);
   scale: 1.07;
+}
+
+/* Text search input */
+.text-search-zone {
+  margin: 1.2rem 0 0.7rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input {
+  padding: 0.75em 1.2em;
+  border-radius: 26px;
+  border: 1.4px solid #e7e8fa;
+  outline: none;
+  font-size: 1.07rem;
+  width: 85%;
+  box-shadow: 0 0px 10px #df284a15;
+  transition: border 0.16s;
+  background: #fff;
+}
+
+.search-input:focus {
+  border: 1.8px solid var(--primary);
 }
 
 /* Promo Banner */
@@ -185,17 +205,4 @@ p {
 }
 
 @keyframes fadeUp {
-  0% { transform: translateY(30px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-/* Responsive Design */
-@media (max-width: 500px) {
-  .main-card {
-    padding: 1.2rem 0.7rem 1rem 0.7rem;
-    max-width: 99vw;
-  }
-  h1 {
-    font-size: 1.28rem;
-  }
-}
+  0% { transform
